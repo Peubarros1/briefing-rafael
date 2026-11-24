@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Roteiro de Call Comic Boom!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@500&display=swap">
+<style>
+/* Layout: barra fixa no topo + índice lateral de seções (vira faixa rolável no celular) + coluna de leitura com itens marcáveis */
+:root{
+  --bg:#FBF6EF; --surface:#FFFFFF; --sunk:#F5EFE8; --fg:#0B1E27; --body:#2A464E; --muted:#5F7A82; --line:#E4DBCC;
+  --accent:#FF6B35; --accent-ink:#0B1E27; --accent-soft:#FFE6DA; --accent-text:#C2410C; --gold:#B7791F;
+  --ok:#0F766E; --ok-soft:#DDF2EF; --crit:#C2410C; --crit-soft:#FDEBE1; --warn:#A16207; --warn-soft:#FDF3DC; --info:#3B5A66; --info-soft:#E7EEF0;
+  --bar:#0B1E27; --bar-fg:#F5EFE8; --bar-muted:#7C9AA3; --bar-line:#21404D;
+  --ff:'Geist',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+  --mono:'Geist Mono',ui-monospace,'Cascadia Mono',Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0A1A22; --surface:#0F2430; --sunk:#0C1F29; --fg:#F5EFE8; --body:#CBD8DB; --muted:#8FA9B1; --line:#22404D;
+  --accent:#FF6B35; --accent-ink:#0B1E27; --accent-soft:#3A2218; --accent-text:#FF9466; --gold:#FFB347;
+  --ok:#4FD1C5; --ok-soft:#12352F; --crit:#FF8A5C; --crit-soft:#3A2218; --warn:#F6C453; --warn-soft:#33290F; --info:#9DB8C2; --info-soft:#18323D;
+  --bar:#071219; --bar-fg:#F5EFE8; --bar-muted:#7C9AA3; --bar-line:#1B3440; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0A1A22; --surface:#0F2430; --sunk:#0C1F29; --fg:#F5EFE8; --body:#CBD8DB; --muted:#8FA9B1; --line:#22404D;
+  --accent:#FF6B35; --accent-ink:#0B1E27; --accent-soft:#3A2218; --accent-text:#FF9466; --gold:#FFB347;
+  --ok:#4FD1C5; --ok-soft:#12352F; --crit:#FF8A5C; --crit-soft:#3A2218; --warn:#F6C453; --warn-soft:#33290F; --info:#9DB8C2; --info-soft:#18323D;
+  --bar:#071219; --bar-fg:#F5EFE8; --bar-muted:#7C9AA3; --bar-line:#1B3440; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--body);font-family:var(--ff);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bar)}
+button,input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* top bar */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bar);color:var(--bar-fg);border-bottom:1px solid var(--bar-line)}
+.bar-in{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding-block:12px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));max-width:1240px;margin:0 auto}
+.wm{display:block;height:18px;width:auto;color:var(--bar-fg);flex:none}
+.wm-txt{font-weight:800;font-size:15px;letter-spacing:.08em;color:var(--bar-fg);flex:none}
+.bar-title{display:flex;flex-direction:column;min-width:0;line-height:1.25;flex:1 1 220px}
+.bar-title b{font-size:14px;font-weight:650;color:var(--bar-fg)}
+.bar-title span{font-size:12px;color:var(--bar-muted)}
+.prog{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--bar-muted);font-variant-numeric:tabular-nums}
+.prog .track{width:120px;height:6px;border-radius:99px;background:var(--bar-line);overflow:hidden}
+.prog .fill{height:100%;width:0;background:var(--accent);transition:width .3s}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:1px solid var(--bar-line);background:transparent;color:var(--bar-fg);border-radius:8px;padding:8px 12px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--bar-muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.05)}
+.btn[disabled]{opacity:.6;cursor:wait}
+
+/* shell */
+.shell{max-width:1240px;margin:0 auto;display:grid;grid-template-columns:232px minmax(0,1fr);gap:40px;padding-block:28px 80px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+nav.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 84px);align-self:start;display:flex;flex-direction:column;gap:2px}
+.toc a{display:flex;justify-content:space-between;gap:10px;align-items:baseline;text-decoration:none;color:var(--muted);font-size:13.5px;padding:8px 10px;border-radius:7px;border-left:2px solid transparent}
+.toc a:hover{background:var(--sunk);color:var(--fg)}
+.toc a.on{color:var(--fg);background:var(--surface);border-left-color:var(--accent)}
+.toc a .c{font-size:11.5px;font-variant-numeric:tabular-nums;color:var(--muted);white-space:nowrap}
+.toc a.full .c{color:var(--ok)}
+.toc .hint{margin-top:14px;font-size:12px;line-height:1.5;color:var(--muted);padding:0 10px}
+main{min-width:0;max-width:820px}
+
+/* call header card */
+.meta{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:36px}
+.meta label{display:flex;flex-direction:column;gap:6px;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:650}
+.meta h1{grid-column:1/-1;margin:0;font-size:24px;line-height:1.2;color:var(--fg);letter-spacing:-.02em;text-wrap:balance}
+.meta p{grid-column:1/-1;margin:-6px 0 0;font-size:14px;color:var(--muted);max-width:68ch}
+
+/* sections */
+section.sec{scroll-margin-top:calc(env(safe-area-inset-top,0px) + 90px);margin-bottom:48px}
+.sec-head{margin-bottom:16px}
+.kicker{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent-text);font-weight:700;margin:0 0 6px}
+.sec-head h2{margin:0 0 6px;font-size:22px;line-height:1.2;color:var(--fg);letter-spacing:-.02em;text-wrap:balance}
+.sec-head p{margin:0;color:var(--muted);font-size:14.5px;max-width:68ch}
+.group{font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:22px 0 8px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+
+/* items */
+.items{display:flex;flex-direction:column;gap:8px}
+.item{display:grid;grid-template-columns:26px minmax(0,1fr);gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;transition:border-color .2s}
+.item.done{border-color:color-mix(in srgb,var(--ok) 45%,var(--line))}
+.chk{appearance:none;-webkit-appearance:none;width:22px;height:22px;border:1.5px solid var(--muted);border-radius:6px;margin:1px 0 0;cursor:pointer;display:grid;place-content:center;background:var(--surface)}
+.chk::after{content:"";width:11px;height:6px;border-left:2.5px solid var(--surface);border-bottom:2.5px solid var(--surface);transform:rotate(-45deg) translate(1px,-1px);opacity:0}
+.chk:checked{background:var(--ok);border-color:var(--ok)}
+.chk:checked::after{opacity:1}
+.item .q{font-weight:600;color:var(--fg);font-size:15px;line-height:1.45;cursor:pointer}
+.item .h{font-size:13px;color:var(--muted);margin-top:3px}
+.ans{margin-top:10px}
+.ans input[type=text],.ans input[type=date],.ans textarea,.ans .num input{width:100%;background:var(--sunk);border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-size:14px;color:var(--fg)}
+.ans textarea{min-height:64px;resize:vertical;line-height:1.5}
+.ans input::placeholder,.ans textarea::placeholder{color:var(--muted);opacity:.8}
+.num{display:flex;align-items:center;gap:8px;max-width:260px}
+.num span{font-size:13px;color:var(--muted);font-weight:600;font-family:var(--mono)}
+.num input{font-variant-numeric:tabular-nums}
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+.opt{position:relative}
+.opt input{position:absolute;opacity:0;pointer-events:none}
+.opt span{display:inline-block;border:1px solid var(--line);background:var(--sunk);border-radius:99px;padding:6px 12px;font-size:13.5px;cursor:pointer;color:var(--body);user-select:none}
+.opt input:checked + span{background:var(--fg);border-color:var(--fg);color:var(--bg)}
+.opt input:focus-visible + span{outline:2px solid var(--accent);outline-offset:2px}
+
+/* topic (roteiro) */
+.topic .t-row{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline}
+.topic .time{font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border-radius:99px;padding:3px 9px;margin-left:8px;vertical-align:2px}
+.pill.crit{color:var(--crit);background:var(--crit-soft)}
+.pill.warn{color:var(--warn);background:var(--warn-soft)}
+.pill.info{color:var(--info);background:var(--info-soft)}
+.pill.ok{color:var(--ok);background:var(--ok-soft)}
+.data{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 2px}
+.data span{font-family:var(--mono);font-size:12px;background:var(--sunk);border:1px solid var(--line);border-radius:6px;padding:3px 8px;color:var(--fg)}
+.topic ul{margin:10px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:4px;font-size:14px}
+.topic ul li::marker{color:var(--accent)}
+.fala{margin:12px 0 0;padding:10px 14px;border-left:3px solid var(--accent);background:var(--sunk);border-radius:0 8px 8px 0;font-size:14.5px;color:var(--fg);line-height:1.5}
+.fala small{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-text);font-weight:700;margin-bottom:2px}
+.ponte{margin-top:8px;font-size:13.5px;color:var(--muted)}
+.ponte b{color:var(--fg);font-weight:600}
+
+/* end card */
+.endcard{background:var(--bar);color:var(--bar-fg);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:12px}
+.endcard h2{margin:0;font-size:20px;color:var(--bar-fg)}
+.endcard p{margin:0;color:var(--bar-muted);font-size:14.5px;max-width:64ch}
+.endcard .actions .btn{border-color:var(--bar-line)}
+.danger{color:var(--bar-muted) !important}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:9px;font-size:14px;font-weight:550;z-index:40;max-width:calc(100% - 32px);box-shadow:0 6px 24px rgba(0,0,0,.25)}
+
+@media (max-width:900px){
+  .shell{grid-template-columns:minmax(0,1fr);gap:16px;padding-top:12px}
+  nav.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--barh,120px));z-index:10;flex-direction:row;overflow-x:auto;gap:4px;background:var(--bg);padding:8px 0;margin:0 calc(-1 * max(16px, env(safe-area-inset-left, 0px)));padding-left:max(16px, env(safe-area-inset-left, 0px));border-bottom:1px solid var(--line)}
+  .toc a{white-space:nowrap;border-left:none;border-bottom:2px solid transparent;border-radius:6px}
+  .toc a.on{border-bottom-color:var(--accent)}
+  .toc .hint{display:none}
+  .meta{grid-template-columns:minmax(0,1fr)}
+  .prog .track{width:80px}
+}
+@media (max-width:600px){
+  .bar-in{gap:10px;padding-block:10px}
+  .bar-title span{display:none}
+  .bar-title{flex:1 1 140px}
+  .wm{height:15px}
+  .prog{order:3;flex:1 1 100%}
+  .prog .track{flex:1;width:auto}
+  .actions{gap:6px}
+  .btn{padding:7px 10px;font-size:12.5px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important}}
+@media print{
+  .bar,nav.toc,.endcard,.toast{display:none !important}
+  body{background:#fff;color:#000}
+  .shell{display:block;padding:0}
+  .item{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+
+<header class="bar" id="bar">
+  <div class="bar-in">
+    <span class="wm-txt">ANTROPIA</span>
+    <div class="bar-title"><b>Call de diagnóstico · Comic Boom!</b><span>Roteiro, briefing e perguntas para o orçamento</span></div>
+    <div class="prog" aria-live="polite"><div class="track"><div class="fill" id="pfill"></div></div><span id="ptext">0 de 0</span></div>
+    <div class="actions">
+      <button class="btn" id="copyBtn" type="button">Copiar respostas</button>
+      <button class="btn primary" id="pdfBtn" type="button">Gerar PDF</button>
+    </div>
+  </div>
+</header>
+
+<div class="shell">
+  <nav class="toc" id="toc" aria-label="Seções"></nav>
+  <main id="main">
+    <div class="meta">
+      <h1>Roteiro da call com a Comic Boom!</h1>
+      <p>Marque cada tópico apresentado e cada pergunta feita. Ao digitar uma resposta, o item é marcado sozinho. Tudo fica salvo neste navegador enquanto você preenche.</p>
+      <label>Data da call<input type="date" id="meta_data" data-meta="data"></label>
+      <label>Quem participou (cliente)<input type="text" id="meta_cliente" data-meta="cliente" placeholder="Nome e cargo"></label>
+      <label>Responsável Antropia<input type="text" id="meta_resp" data-meta="resp" placeholder="Seu nome"></label>
+    </div>
+    <div id="sections"></div>
+    <div class="endcard" id="fim">
+      <h2>Fechou a call? Gere o PDF.</h2>
+      <p>O PDF traz um resumo no topo (temperatura, frentes de interesse, verba e números de vendas) e depois todas as respostas, inclusive o que ficou sem perguntar. Anexe esse arquivo na conversa com o Claude para montar a decisão e o orçamento da call de fechamento.</p>
+      <div class="actions">
+        <button class="btn primary" id="pdfBtn2" type="button">Gerar PDF</button>
+        <button class="btn" id="copyBtn2" type="button">Copiar respostas</button>
+        <button class="btn danger" id="clearBtn" type="button">Limpar tudo</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="vendor/jspdf.umd.min.js"></script>
+<script>
+/* ============================== CONTEÚDO ============================== */
+const SECTIONS = [
+{ id:'roteiro', nav:'Roteiro', kicker:'Parte 1 · cerca de 15 minutos', title:'Apresentar o diagnóstico',
+  intro:'Conduza em tópicos. A ideia é mostrar o problema com números, não ler o documento. Anote a reação do cliente em cada frente: o que ele já sabia, o que surpreendeu, o que ele contestou.',
+  items:[
+  {type:'topic', id:'r_abertura', title:'Abertura e combinados', time:'2 min',
+   points:['Agradecer o tempo e confirmar quanto tempo ele tem (ideal: 40 minutos).','Objetivo da call: mostrar o que encontramos, entender a operação e sair com os próximos passos.','Pedir permissão para anotar e fazer perguntas sobre números.'],
+   fala:'Fizemos uma auditoria de fora, sem acesso ao painel de vocês. Vou mostrar o que encontramos e depois quero entender os números da loja para montar uma proposta que faça sentido.'},
+  {type:'topic', id:'r_contexto', title:'Como a auditoria foi feita', time:'1 min', tag:['info','Contexto'],
+   data:['24/11/2026','4.681 URLs no sitemap','amostra de 60 produtos','sem acesso a painéis'],
+   points:['Lemos o código das páginas, robots.txt, sitemap e uma amostra aleatória de produtos.','Velocidade medida em laboratório, simulando celular com 4G lento.','O que depende de acesso ficou marcado como "a validar".']},
+  {type:'topic', id:'r_visao', title:'Visão geral: o que trava não é demanda', time:'1 min',
+   points:['A loja tem catálogo grande, loja física com eventos e cursos e comunidade no Instagram e no YouTube.','O que limita o tráfego é mensuração, velocidade e preparo das páginas que recebem o clique.'],
+   fala:'Vocês já têm o que muita loja não tem: catálogo, marca e público. O que falta é a base para colocar verba em anúncio sem desperdiçar.'},
+  {type:'topic', id:'r_f1', title:'Frente 1 · Mensuração e pixels', time:'3 min', tag:['crit','Crítico'],
+   data:['0 tags sem aceite de cookies','GTM (Yireo) instalado','Pixel (Cadence) instalado','dataLayer inexistente'],
+   points:['Nenhuma tag do Google ou da Meta carrega para quem não clica em "Permitir Cookies".','Os módulos estão instalados, mas o modo de restrição de cookies bloqueia tudo até o clique.','Sem o sinal de compra, Google e Meta não aprendem quem compra e o custo por venda sobe.','Não sabemos se, após o aceite, os eventos de compra chegam completos: precisa de acesso.'],
+   fala:'Hoje, se vocês ligarem um anúncio, o Google e a Meta não enxergam boa parte das vendas que ele gera. É como dirigir sem painel.',
+   ponte:'Vocês sabiam que o pixel só funciona depois que o visitante aceita os cookies?'},
+  {type:'topic', id:'r_f2', title:'Frente 2 · Velocidade no celular', time:'2 min', tag:['crit','Crítico'],
+   data:['LCP 7 a 11 s (meta: 2,5 s)','~200 arquivos JS','251 requisições','home 3,4 MB'],
+   points:['O conteúdo principal demora de 7 a 11 segundos para aparecer no celular.','Cada segundo de espera aumenta o abandono antes da página abrir. O clique já foi pago.','Página lenta piora a nota de qualidade no Google Ads e encarece o CPC.','A correção é técnica e boa parte pode ser pedida à Mageshop.'],
+   fala:'Vocês pagariam pelo clique e uma parte das pessoas desistiria antes de ver o produto.'},
+  {type:'topic', id:'r_f3', title:'Frente 3 · Página de destino e oferta', time:'2 min', tag:['warn','Atenção'],
+   data:['1ª tela sem produto','sem oferta na semana de Black Friday','banner de cookies = 1/4 da tela'],
+   points:['No celular, a primeira tela da home não mostra produto, preço, frete nem a Super Boom Friday.','Anúncio não deve levar para a home: cada campanha precisa de uma página com oferta e estoque no topo.','Proposta: 3 a 5 páginas de destino por campanha usando os blocos da própria plataforma.'],
+   ponte:'Hoje, quando vocês divulgam no Instagram, para qual página mandam o público?'},
+  {type:'topic', id:'r_f4', title:'Frente 4 · SEO técnico e conteúdo', time:'2 min', tag:['warn','Atenção'],
+   data:['0 de 4 páginas com meta description','título da home: "Comic Boom"','schema sem editora/ISBN/avaliações','www com 302'],
+   points:['Quem busca "Blue Lock 30" está pronto para comprar; esse tráfego não tem custo por clique.','Títulos e descrições automáticos por tipo de página resolvem milhares de páginas de uma vez.','Completar o schema de produto habilita estrelas, preço e frete no Google.']},
+  {type:'topic', id:'r_f5', title:'Frente 5 · Catálogo, feeds e estoque', time:'2 min', tag:['info','A validar'],
+   data:['25 de 60 fora de estoque (42%)','0 avaliações na amostra','feed Google/Meta: a validar'],
+   points:['As campanhas que mais vendem para varejo com catálogo grande usam o feed: Performance Max e catálogo da Meta.','Feed deve enviar só itens em estoque, com título padronizado (série, volume, editora).','Páginas esgotadas: mostrar volumes da mesma série e captar contato sem exigir login.','Loja física, eventos e cursos são oportunidade de tráfego local.'],
+   ponte:'Os produtos têm ISBN e editora cadastrados no painel?'},
+  {type:'topic', id:'r_mageshop', title:'O que a Mageshop já oferece', time:'1 min', tag:['ok','Ponto forte'],
+   points:['Feed avançado para Google Shopping, Meta, TikTok e Pinterest.','Dados estruturados avançados, avaliações nativas e Google Customer Reviews.','Carrinho abandonado por e-mail e WhatsApp (Flowbiz) e módulo de campanhas com cupom no link.','A API de Conversões da Meta não está documentada: exige GTM server-side, à parte.'],
+   fala:'Boa parte da solução já está na plataforma que vocês pagam. Falta ligar e configurar direito.'},
+  {type:'topic', id:'r_plano', title:'Plano em ondas', time:'1 min',
+   points:['Onda 1: mensuração completa e feeds (pré-requisito para escalar verba).','Onda 2: velocidade e páginas de destino.','Onda 3: SEO on-page, avaliações e recuperação de carrinho.','Onda 4: tráfego local para loja, eventos e cursos.']},
+  {type:'topic', id:'r_transicao', title:'Transição para as perguntas', time:'30 s',
+   fala:'Para eu montar o orçamento certo, preciso entender alguns números e como vocês trabalham hoje. Pode ser?'}
+  ]},
+{ id:'trafego', nav:'Tráfego e vendas', kicker:'Parte 2 · cerca de 10 minutos', title:'Histórico de tráfego e vendas on-line',
+  intro:'Aqui saem os números que definem verba, meta e preço. Se ele não souber um número, anote "não sabe": isso também é diagnóstico.',
+  items:[
+  {type:'group', label:'Tráfego pago'},
+  {type:'q', id:'tp_fez', q:'Vocês já fizeram tráfego pago?', input:'radio', options:['Sim, fazem hoje','Sim, no passado','Nunca fizeram']},
+  {type:'q', id:'tp_onde', q:'Em quais canais?', input:'multi', options:['Google Ads','Meta Ads (Instagram/Facebook)','TikTok Ads','Mercado Livre / Shopee Ads','Influenciadores pagos','Outro']},
+  {type:'q', id:'tp_quem', q:'Quem gerenciava as campanhas?', input:'radio', options:['Equipe interna','Agência','Freelancer','O próprio dono']},
+  {type:'q', id:'tp_periodo', q:'Por quanto tempo fizeram e quando pararam?', input:'text', ph:'Ex.: 8 meses, parou em julho/2026'},
+  {type:'q', id:'tp_invest', q:'Quanto investiam por mês em mídia?', hint:'Só a verba que vai para Google/Meta, sem a gestão.', input:'money'},
+  {type:'q', id:'tp_fee', q:'Quanto pagavam pela gestão (agência ou freelancer)?', input:'money'},
+  {type:'q', id:'tp_result', q:'Que resultado tiveram? Lembram de ROAS, custo por venda ou faturamento gerado?', input:'textarea', ph:'Ex.: ROAS 3, mas não confiavam no número'},
+  {type:'q', id:'tp_porque', q:'Por que pararam, ou o que não funcionou?', input:'textarea'},
+  {type:'group', label:'Vendas on-line'},
+  {type:'q', id:'vo_problema', q:'Qual é hoje o maior problema das vendas on-line?', input:'multi', options:['Pouco tráfego','Tráfego que não compra','Concorrência de preço (Amazon, editoras, ML)','Frete caro','Ruptura de estoque','Margem baixa','Não conseguem medir','Outro']},
+  {type:'q', id:'vo_problema_det', q:'O problema nas palavras dele', hint:'Peça para ele explicar com as próprias palavras.', input:'textarea'},
+  {type:'q', id:'vo_fat', q:'Faturamento médio mensal do e-commerce', input:'money'},
+  {type:'q', id:'vo_pedidos', q:'Pedidos por mês no site', input:'number', unit:'pedidos'},
+  {type:'q', id:'vo_ticket', q:'Ticket médio do site', input:'money'},
+  {type:'q', id:'vo_conv', q:'Taxa de conversão do site', hint:'Pedidos ÷ visitas. Em e-commerce costuma ficar entre 0,5% e 2%.', input:'percent'},
+  {type:'q', id:'vo_carrinho', q:'Taxa de carrinho abandonado', hint:'A média de mercado gira em torno de 70%.', input:'percent'},
+  {type:'q', id:'vo_recupera', q:'Fazem recuperação de carrinho abandonado?', input:'radio', options:['Sim, automática (e-mail/WhatsApp)','Sim, manual','Não fazem']},
+  {type:'group', label:'Leitura de dados'},
+  {type:'q', id:'vo_ve', q:'Vocês acompanham esses números?', input:'radio', options:['Toda semana','De vez em quando','Quase nunca']},
+  {type:'q', id:'vo_onde', q:'Onde olham os dados?', input:'multi', options:['Painel da Mageshop','Google Analytics','Gerenciador de anúncios','Planilha própria','ERP','Em lugar nenhum']},
+  {type:'q', id:'vo_resp', q:'Quem é o responsável pelos números do e-commerce?', input:'text', ph:'Nome e função'}
+  ]},
+{ id:'briefing', nav:'Briefing', kicker:'Parte 3 · cerca de 10 minutos', title:'Briefing do negócio',
+  intro:'Entender a operação, o público e as metas. Não precisa seguir a ordem: marque conforme a conversa for passando por cada ponto.',
+  items:[
+  {type:'group', label:'Empresa e operação'},
+  {type:'q', id:'b_tempo', q:'Há quanto tempo existem a loja física e o e-commerce?', input:'text'},
+  {type:'q', id:'b_equipe', q:'Quantas pessoas cuidam do e-commerce e o que cada uma faz?', input:'text'},
+  {type:'q', id:'b_decisor', q:'Quem decide a contratação e quem mais participa?', input:'text'},
+  {type:'q', id:'b_mix', q:'Como o faturamento se divide entre site, loja física e eventos?', input:'text', ph:'Ex.: 40% site, 50% loja, 10% eventos'},
+  {type:'q', id:'b_fatTotal', q:'Faturamento mensal total da empresa', input:'money'},
+  {type:'group', label:'Produto e margem'},
+  {type:'q', id:'b_top', q:'Quais categorias e séries mais vendem?', input:'textarea'},
+  {type:'q', id:'b_margem', q:'Margem média por categoria (mangás, HQs, board games, TCG, importados, seminovos)', input:'textarea'},
+  {type:'q', id:'b_preco', q:'Como o preço de vocês se compara com Amazon, editoras e Mercado Livre?', input:'textarea'},
+  {type:'q', id:'b_dif', q:'Por que um cliente compra na Comic Boom! e não em outro lugar?', input:'textarea'},
+  {type:'group', label:'Público'},
+  {type:'q', id:'b_publico', q:'Quem é o cliente principal (idade, perfil, colecionador ou leitor casual)?', input:'textarea'},
+  {type:'q', id:'b_regiao', q:'Que parte dos pedidos vem de fora de São Paulo?', input:'percent'},
+  {type:'q', id:'b_recompra', q:'Com que frequência o mesmo cliente volta a comprar?', input:'text'},
+  {type:'q', id:'b_base', q:'Tamanho da base: clientes cadastrados, lista de e-mail, seguidores', input:'text'},
+  {type:'group', label:'Condições comerciais'},
+  {type:'q', id:'b_frete', q:'Política de frete (grátis a partir de quanto, para onde)', input:'text'},
+  {type:'q', id:'b_pix', q:'Desconto no PIX e parcelamento', input:'text'},
+  {type:'q', id:'b_despacho', q:'Prazo médio de despacho', input:'text'},
+  {type:'q', id:'b_marketplace', q:'Vendem em marketplaces? Quanto representa?', input:'text'},
+  {type:'q', id:'b_ferramentas', q:'Ferramentas em uso: ERP, e-mail marketing, WhatsApp, CRM', input:'text'},
+  {type:'group', label:'Calendário e conteúdo'},
+  {type:'q', id:'b_datas', q:'Datas mais fortes do ano e próximos eventos (Natal, CCXP, lançamentos)', input:'textarea'},
+  {type:'q', id:'b_prevenda', q:'Com que frequência entram lançamentos e pré-vendas?', input:'text'},
+  {type:'q', id:'b_conteudo', q:'Quem produz fotos e vídeos? Têm material da loja e dos eventos?', input:'text'},
+  {type:'q', id:'b_eventos', q:'Como funcionam os eventos e cursos (frequência, público, preço)?', input:'textarea'},
+  {type:'group', label:'Metas e expectativa'},
+  {type:'q', id:'b_meta90', q:'Qual seria um bom resultado em 90 dias?', input:'textarea'},
+  {type:'q', id:'b_meta12', q:'Onde querem estar em 12 meses?', input:'textarea'},
+  {type:'q', id:'b_verba', q:'Verba de mídia disponível por mês', hint:'Só mídia, sem a gestão.', input:'money'},
+  {type:'q', id:'b_inicio', q:'Quando gostariam de começar?', input:'text'},
+  {type:'q', id:'b_ruim', q:'Já tiveram experiência ruim com agência? O que não pode se repetir?', input:'textarea'}
+  ]},
+{ id:'tecnicas', nav:'Técnicas', kicker:'Parte 4 · checklist', title:'Perguntas técnicas',
+  intro:'Servem para validar os pontos marcados como "a validar" no diagnóstico e dimensionar o setup.',
+  items:[
+  {type:'group', label:'Acessos'},
+  {type:'q', id:'t_admin', q:'Acesso de administrador ao painel da Mageshop', input:'radio', options:['Libera','Libera parcial','Não libera']},
+  {type:'q', id:'t_acessos', q:'Quais contas já existem e podem ser compartilhadas?', input:'multi', options:['Google Tag Manager','Google Analytics 4','Google Ads','Merchant Center','Gerenciador de Negócios Meta','Search Console','Perfil da empresa no Google']},
+  {type:'q', id:'t_dono', q:'As contas estão no nome da empresa ou de terceiros (agência antiga, sobrinho, ex-funcionário)?', input:'text'},
+  {type:'group', label:'Plataforma'},
+  {type:'q', id:'t_plano', q:'Qual plano contratado na Mageshop e o que o suporte executa sem custo?', input:'text'},
+  {type:'q', id:'t_modulos', q:'Quais módulos estão ativos?', input:'multi', options:['Feed avançado','Avaliações','Flowbiz (carrinho)','Módulo Campanhas','Dados estruturados avançados','Normalizador de UTMs/gclid','Programa de pontos']},
+  {type:'q', id:'t_alteracoes', q:'Quem faz alterações no site e em quanto tempo?', input:'text'},
+  {type:'q', id:'t_dns', q:'Quem administra domínio e DNS (Cloudflare)?', input:'text'},
+  {type:'group', label:'Mensuração'},
+  {type:'q', id:'t_gtm', q:'Quem configurou os módulos de GTM e Pixel? Há ID de contêiner e de pixel cadastrados?', input:'text'},
+  {type:'q', id:'t_cookies', q:'Podemos trocar o banner de cookies por um com Aceitar/Recusar e Consent Mode?', input:'radio', options:['Sim','Precisa aprovar','Não']},
+  {type:'q', id:'t_capi', q:'Aceitam um custo mensal de servidor para a API de Conversões (GTM server-side)?', input:'radio', options:['Sim','Depende do valor','Não']},
+  {type:'q', id:'t_dominio', q:'O domínio está verificado na Meta?', input:'radio', options:['Sim','Não','Não sabe']},
+  {type:'group', label:'Catálogo'},
+  {type:'q', id:'t_isbn', q:'Os produtos têm ISBN/EAN e editora cadastrados?', input:'radio', options:['Todos','Parte','Nenhum','Não sabe']},
+  {type:'q', id:'t_estoque', q:'Como o estoque é atualizado e com que frequência?', input:'text', ph:'Manual, ERP, integração...'},
+  {type:'q', id:'t_fotos', q:'Fotos de produto são próprias ou da editora?', input:'text'},
+  {type:'q', id:'t_merchant', q:'Já enviaram produtos ao Merchant Center ou a um catálogo da Meta? Houve reprovações?', input:'text'},
+  {type:'group', label:'Relacionamento'},
+  {type:'q', id:'t_email', q:'Ferramenta de e-mail marketing e tamanho da lista', input:'text'},
+  {type:'q', id:'t_whats', q:'WhatsApp comercial: app comum ou API? Quem atende?', input:'text'}
+  ]},
+{ id:'estrategicas', nav:'Estratégicas', kicker:'Parte 5 · checklist', title:'Perguntas estratégicas',
+  intro:'Definem onde a verba vai primeiro e quais ofertas podemos usar nos anúncios.',
+  items:[
+  {type:'q', id:'e_prioridade', q:'Quais categorias ou séries devem puxar a venda nos próximos 90 dias?', input:'textarea'},
+  {type:'q', id:'e_isca', q:'Quais produtos dão mais margem e quais servem de isca para atrair cliente novo?', input:'textarea'},
+  {type:'q', id:'e_cupom', q:'Podem oferecer cupom de primeira compra? Até quantos por cento?', input:'text'},
+  {type:'q', id:'e_frete', q:'Topam frete grátis como oferta de campanha? A partir de quanto?', input:'text'},
+  {type:'q', id:'e_cac', q:'Quanto podem pagar para conquistar um cliente novo (ou ROAS mínimo aceitável)?', input:'text'},
+  {type:'q', id:'e_posicao', q:'Onde querem ganhar da concorrência: preço, curadoria, raridades, atendimento, comunidade?', input:'multi', options:['Preço','Curadoria','Raridades e seminovos','Atendimento','Comunidade e eventos','Pré-venda e lançamentos']},
+  {type:'q', id:'e_raridades', q:'Seminovos e raridades: vale anunciar itens de estoque único?', input:'radio', options:['Sim','Não','Avaliar']},
+  {type:'q', id:'e_loja', q:'Querem usar tráfego para levar gente à loja física e aos eventos?', input:'radio', options:['Sim, prioridade','Sim, secundário','Não']},
+  {type:'q', id:'e_cursos', q:'Querem captar alunos para os cursos com anúncios?', input:'radio', options:['Sim','Não','Mais para frente']},
+  {type:'q', id:'e_creators', q:'Trabalham com influenciadores ou criadores parceiros?', input:'text'},
+  {type:'q', id:'e_natal', q:'O que já está planejado para CCXP, Natal e janeiro?', input:'textarea'},
+  {type:'q', id:'e_bf', q:'Como está a Black Friday até agora? Fizeram alguma divulgação?', input:'textarea'},
+  {type:'q', id:'e_aprovacao', q:'Quem aprova anúncios e ofertas, e em quanto tempo?', input:'text'},
+  {type:'q', id:'e_relatorio', q:'Que tipo de relatório e frequência de reunião esperam?', input:'text'}
+  ]},
+{ id:'fechamento', nav:'Encerramento', kicker:'Parte 6 · últimos 5 minutos', title:'Encerramento e próximos passos',
+  intro:'Preencha logo depois de desligar, com a conversa fresca. Esta parte vira o resumo no topo do PDF.',
+  items:[
+  {type:'q', id:'f_temp', q:'Temperatura do lead', input:'radio', options:['Frio','Morno','Quente']},
+  {type:'q', id:'f_frentes', q:'Frentes em que ele demonstrou interesse', input:'multi', options:['Setup de mensuração (GTM, GA4, CAPI)','Feeds Google e Meta','Gestão de Google Ads','Gestão de Meta Ads','Páginas de destino','SEO on-page','Carrinho abandonado e CRM','Tráfego local (loja, eventos, cursos)']},
+  {type:'q', id:'f_verba', q:'Faixa de verba de mídia discutida', input:'radio', options:['Até R$ 3 mil/mês','R$ 3 a 10 mil/mês','R$ 10 a 30 mil/mês','Acima de R$ 30 mil/mês','Não definiu']},
+  {type:'q', id:'f_fee', q:'Ele deu alguma referência de quanto quer pagar pela gestão?', input:'text'},
+  {type:'q', id:'f_objecoes', q:'Objeções e dúvidas que apareceram', input:'textarea'},
+  {type:'q', id:'f_combinados', q:'O que ficou combinado', input:'textarea'},
+  {type:'q', id:'f_acessos', q:'Acessos prometidos e prazo de envio', input:'text'},
+  {type:'q', id:'f_dataFech', q:'Data da call de fechamento', input:'date'},
+  {type:'q', id:'f_obs', q:'Impressões gerais (o que não foi dito, mas ficou claro)', input:'textarea'}
+  ]}
+];
+
+/* ============================== ESTADO ============================== */
+const KEY='antropia-call-comicboom-v1';
+let state={meta:{},items:{}};
+try{const raw=localStorage.getItem(KEY); if(raw){const s=JSON.parse(raw); if(s&&s.items) state=s;}}catch(e){}
+let saveT=null;
+let saveWarned=false;
+function flush(){clearTimeout(saveT);saveT=null;try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){if(!saveWarned){saveWarned=true;toast('Este navegador não está salvando as respostas. Gere o PDF antes de fechar a página.')}}}
+function save(){clearTimeout(saveT);saveT=setTimeout(flush,250)}
+/* grava o que estiver pendente ao fechar a aba ou trocar de app no celular */
+addEventListener('pagehide',()=>{if(saveT)flush()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&saveT)flush()});
+function st(id){return state.items[id]||(state.items[id]={done:false,v:''})}
+
+/* ============================== RENDER ============================== */
+const $=(s,r=document)=>r.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const countable=sec=>sec.items.filter(i=>i.type!=='group');
+
+function answerHTML(it){
+  const id='a_'+it.id, v=st(it.id).v;
+  switch(it.input){
+    case 'textarea': return `<textarea id="${id}" data-a="${it.id}" placeholder="${esc(it.ph||'Resposta')}">${esc(v||'')}</textarea>`;
+    case 'money': return `<div class="num"><span>R$</span><input type="text" inputmode="decimal" id="${id}" data-a="${it.id}" value="${esc(v||'')}" placeholder="0"></div>`;
+    case 'percent': return `<div class="num"><input type="text" inputmode="decimal" id="${id}" data-a="${it.id}" value="${esc(v||'')}" placeholder="0"><span>%</span></div>`;
+    case 'number': return `<div class="num"><input type="text" inputmode="numeric" id="${id}" data-a="${it.id}" value="${esc(v||'')}" placeholder="0"><span>${esc(it.unit||'')}</span></div>`;
+    case 'date': return `<input type="date" id="${id}" data-a="${it.id}" value="${esc(v||'')}" style="max-width:220px">`;
+    case 'radio': case 'multi': {
+      const t=it.input==='radio'?'radio':'checkbox', sel=Array.isArray(v)?v:(v?[v]:[]);
+      return `<div class="opts" role="${t==='radio'?'radiogroup':'group'}">`+it.options.map((o,k)=>`<label class="opt"><input type="${t}" name="${id}" id="${id}_${k}" data-a="${it.id}" data-kind="${it.input}" value="${esc(o)}"${sel.includes(o)?' checked':''}><span>${esc(o)}</span></label>`).join('')+`</div>`;
+    }
+    default: return `<input type="text" id="${id}" data-a="${it.id}" value="${esc(v||'')}" placeholder="${esc(it.ph||'Resposta')}">`;
+  }
+}
+
+function render(){
+  const host=$('#sections'); let html='';
+  SECTIONS.forEach(sec=>{
+    html+=`<section class="sec" id="s_${sec.id}"><div class="sec-head"><p class="kicker">${esc(sec.kicker)}</p><h2>${esc(sec.title)}</h2><p>${esc(sec.intro)}</p></div><div class="items">`;
+    sec.items.forEach(it=>{
+      if(it.type==='group'){html+=`</div><div class="group">${esc(it.label)}</div><div class="items">`;return}
+      const s=st(it.id), cid='c_'+it.id;
+      if(it.type==='topic'){
+        html+=`<div class="item topic${s.done?' done':''}" data-item="${it.id}"><input type="checkbox" class="chk" id="${cid}" data-c="${it.id}"${s.done?' checked':''} aria-label="Tópico apresentado"><div>
+          <div class="t-row"><label class="q" for="${cid}">${esc(it.title)}${it.tag?`<span class="pill ${it.tag[0]}">${esc(it.tag[1])}</span>`:''}</label><span class="time">${esc(it.time||'')}</span></div>
+          ${it.data?`<div class="data">${it.data.map(d=>`<span>${esc(d)}</span>`).join('')}</div>`:''}
+          ${it.points?`<ul>${it.points.map(p=>`<li>${esc(p)}</li>`).join('')}</ul>`:''}
+          ${it.fala?`<p class="fala"><small>Fala sugerida</small>${esc(it.fala)}</p>`:''}
+          ${it.ponte?`<p class="ponte"><b>Pergunta-ponte:</b> ${esc(it.ponte)}</p>`:''}
+          <div class="ans"><textarea id="a_${it.id}" data-a="${it.id}" placeholder="Reação do cliente, dúvidas, o que ele contestou">${esc(s.v||'')}</textarea></div>
+        </div></div>`;
+      } else {
+        html+=`<div class="item${s.done?' done':''}" data-item="${it.id}"><input type="checkbox" class="chk" id="${cid}" data-c="${it.id}"${s.done?' checked':''} aria-label="Pergunta feita"><div>
+          <label class="q" for="${cid}">${esc(it.q)}</label>${it.hint?`<div class="h">${esc(it.hint)}</div>`:''}
+          <div class="ans">${answerHTML(it)}</div></div></div>`;
+      }
+    });
+    html+=`</div></section>`;
+  });
+  host.innerHTML=html.replace(/<div class="items"><\/div>/g,'');
+  $('#toc').innerHTML=SECTIONS.map(s=>`<a href="#s_${s.id}" data-sec="${s.id}"><span>${esc(s.nav)}</span><span class="c"></span></a>`).join('')+`<p class="hint">Atalho: clique no texto da pergunta para marcar ou desmarcar.</p>`;
+  document.querySelectorAll('[data-meta]').forEach(el=>{el.value=state.meta[el.dataset.meta]||''});
+  progress();
+}
+
+function progress(){
+  let all=0,done=0;
+  SECTIONS.forEach(sec=>{
+    const its=countable(sec), d=its.filter(i=>st(i.id).done).length; all+=its.length; done+=d;
+    const a=document.querySelector(`.toc a[data-sec="${sec.id}"]`);
+    if(a){a.querySelector('.c').textContent=`${d}/${its.length}`; a.classList.toggle('full',d===its.length)}
+  });
+  $('#pfill').style.width=(all?Math.round(done/all*100):0)+'%';
+  $('#ptext').textContent=`${done} de ${all}`;
+}
+
+function setDone(id,on){
+  st(id).done=on; const row=document.querySelector(`[data-item="${id}"]`);
+  if(row){row.classList.toggle('done',on); const c=row.querySelector('.chk'); if(c) c.checked=on}
+  progress(); save();
+}
+
+document.addEventListener('change',e=>{
+  const t=e.target;
+  if(t.dataset.c){setDone(t.dataset.c,t.checked);return}
+  if(t.dataset.kind){
+    const id=t.dataset.a, boxes=[...document.querySelectorAll(`input[data-a="${id}"]`)];
+    st(id).v = t.dataset.kind==='radio' ? t.value : boxes.filter(b=>b.checked).map(b=>b.value);
+    const has=Array.isArray(st(id).v)?st(id).v.length>0:!!st(id).v;
+    if(has && !st(id).done) setDone(id,true); else save();
+  }
+});
+document.addEventListener('input',e=>{
+  const t=e.target;
+  if(t.dataset.meta){state.meta[t.dataset.meta]=t.value;save();return}
+  if(t.dataset.a && !t.dataset.kind){
+    const id=t.dataset.a; st(id).v=t.value;
+    if(t.value.trim() && !st(id).done) setDone(id,true); else save();
+  }
+});
+
+/* seção ativa no índice */
+const io=new IntersectionObserver(es=>{es.forEach(en=>{if(en.isIntersecting){const id=en.target.id.slice(2);document.querySelectorAll('.toc a').forEach(a=>a.classList.toggle('on',a.dataset.sec===id))}})},{rootMargin:'-35% 0px -60% 0px'});
+
+function barH(){document.documentElement.style.setProperty('--barh',$('#bar').offsetHeight+'px')}
+
+/* ============================== TEXTO / RESUMO ============================== */
+function fmtVal(it,v){
+  if(v==null||v===''||(Array.isArray(v)&&!v.length)) return '';
+  if(Array.isArray(v)) return v.join(', ');
+  if(it.input==='money') return 'R$ '+v;
+  if(it.input==='percent') return v+'%';
+  if(it.input==='number') return v+(it.unit?' '+it.unit:'');
+  if(it.input==='date'){const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(v); return m?`${m[3]}/${m[2]}/${m[1]}`:v}
+  return v;
+}
+function findItem(id){for(const s of SECTIONS) for(const i of s.items) if(i.id===id) return i}
+function ans(id){const it=findItem(id); return it?fmtVal(it,st(id).v):''}
+function metaDate(){const v=state.meta.data||''; const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(v); return m?`${m[3]}/${m[2]}/${m[1]}`:''}
+
+const SUMMARY=[['Temperatura do lead','f_temp'],['Frentes de interesse','f_frentes'],['Verba de mídia discutida','f_verba'],['Verba disponível (briefing)','b_verba'],['Referência de fee','f_fee'],['Já fez tráfego','tp_fez'],['Investimento anterior em mídia','tp_invest'],['Faturamento on-line/mês','vo_fat'],['Ticket médio','vo_ticket'],['Conversão do site','vo_conv'],['Carrinho abandonado','vo_carrinho'],['Maior problema on-line','vo_problema'],['Acompanha os números','vo_ve'],['Data da call de fechamento','f_dataFech']];
+
+function plainText(){
+  let out=`ROTEIRO DE CALL · COMIC BOOM! (Antropia)\nData: ${metaDate()||'-'} | Cliente: ${state.meta.cliente||'-'} | Responsável: ${state.meta.resp||'-'}\n\nRESUMO\n`;
+  SUMMARY.forEach(([l,id])=>{out+=`- ${l}: ${ans(id)||'sem resposta'}\n`});
+  SECTIONS.forEach(sec=>{
+    const its=countable(sec); out+=`\n${sec.title.toUpperCase()} (${its.filter(i=>st(i.id).done).length}/${its.length})\n`;
+    sec.items.forEach(it=>{
+      if(it.type==='group'){out+=`\n  ${it.label}\n`;return}
+      const s=st(it.id), label=it.type==='topic'?it.title:it.q, a=it.type==='topic'?(s.v||''):fmtVal(it,s.v);
+      out+=`[${s.done?'x':' '}] ${label}${a?`\n    -> ${a.replace(/\n/g,'\n       ')}`:''}\n`;
+    });
+  });
+  return out;
+}
+
+/* ============================== PDF ============================== */
+function pdfSafe(s){
+  return String(s).replace(/[‘’]/g,"'").replace(/[“”]/g,'"').replace(/[–—]/g,'-').replace(/…/g,'...')
+   .replace(/→/g,'->').replace(/≈/g,'~').replace(/≥/g,'>=').replace(/≤/g,'<=').replace(/•/g,'-').replace(/÷/g,'/')
+   .replace(/[^\x09\x0A\x0D\x20-\x7E -ÿ]/g,'');
+}
+function wordmarkPNG(color){
+  return new Promise(res=>{
+    try{
+      const sym=document.getElementById('wm'); if(!sym) return res(null);
+      const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5208 910" width="1040" height="182" color="${color}" style="color:${color}">${sym.innerHTML}</svg>`;
+      const img=new Image(); img.onload=()=>{try{const c=document.createElement('canvas');c.width=1040;c.height=182;c.getContext('2d').drawImage(img,0,0,1040,182);res(c.toDataURL('image/png'))}catch(e){res(null)}};
+      img.onerror=()=>res(null); img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+    }catch(e){res(null)}
+  });
+}
+async function buildPDF(){
+  const {jsPDF}=window.jspdf; const doc=new jsPDF({unit:'mm',format:'a4'});
+  const W=210,H=297,M=16,CW=W-2*M; let y=0;
+  const INK=[11,30,39],BODY=[42,70,78],MUT=[95,122,130],LINE=[228,219,204],SOL=[255,107,53],OK=[15,118,110],SAND=[245,239,232];
+  const lh=pt=>pt*0.3528*1.38;
+  const need=h=>{if(y+h>H-16){doc.addPage();y=18}};
+  const para=(txt,{size=9.5,style='normal',color=BODY,x=M,w=CW,gap=0}={})=>{doc.setFont('helvetica',style);doc.setFontSize(size);doc.setTextColor(...color);
+    const lines=doc.splitTextToSize(pdfSafe(txt),w); lines.forEach(l=>{need(lh(size));doc.text(l,x,y+lh(size)*0.78);y+=lh(size)}); y+=gap};
+  // capa / cabeçalho
+  doc.setFillColor(...INK); doc.rect(0,0,W,46,'F');
+  const wm=await wordmarkPNG('#F5EFE8'); if(wm) doc.addImage(wm,'PNG',M,13,40,7); else {doc.setFont('helvetica','bold');doc.setFontSize(14);doc.setTextColor(...SAND);doc.text('ANTROPIA',M,19)}
+  doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(124,154,163);doc.text(pdfSafe('ROTEIRO E BRIEFING DE CALL'),W-M,16,{align:'right'});
+  doc.setFont('helvetica','bold');doc.setFontSize(17);doc.setTextColor(...SAND);doc.text(pdfSafe('Call de diagnóstico · Comic Boom!'),M,33);
+  doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(203,216,219);
+  doc.text(pdfSafe(`Data: ${metaDate()||'-'}   ·   Cliente: ${state.meta.cliente||'-'}   ·   Responsável: ${state.meta.resp||'-'}`),M,40);
+  y=56;
+  // resumo
+  doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(...SOL);doc.text('RESUMO PARA A DECISÃO',M,y);y+=5;
+  const colL=56;
+  SUMMARY.forEach(([l,id])=>{
+    const a=ans(id)||'sem resposta'; doc.setFontSize(9);
+    const lines=doc.splitTextToSize(pdfSafe(a),CW-colL-4); const h=Math.max(1,lines.length)*lh(9)+2.4;
+    need(h); doc.setDrawColor(...LINE);doc.setLineWidth(.2);doc.line(M,y,W-M,y);
+    doc.setFont('helvetica','bold');doc.setTextColor(...MUT);doc.text(pdfSafe(l),M,y+lh(9)*0.78+1.2);
+    doc.setFont('helvetica',a==='sem resposta'?'italic':'normal');doc.setTextColor(...(a==='sem resposta'?MUT:INK));
+    lines.forEach((ln,k)=>doc.text(ln,M+colL,y+lh(9)*(k+.78)+1.2)); y+=h;
+  });
+  doc.line(M,y,W-M,y); y+=6;
+  // cobertura
+  doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(...SOL);doc.text('COBERTURA DA CALL',M,y);y+=5;
+  doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(...BODY);
+  const cov=SECTIONS.map(s=>{const its=countable(s);return `${s.nav}: ${its.filter(i=>st(i.id).done).length}/${its.length}`}).join('   ·   ');
+  para(cov,{size:9,gap:4});
+  // seções
+  SECTIONS.forEach(sec=>{
+    need(22); y+=3;
+    doc.setFillColor(...SAND); doc.rect(M,y,CW,10,'F'); doc.setFillColor(...SOL); doc.rect(M,y,1.2,10,'F');
+    doc.setFont('helvetica','bold');doc.setFontSize(11.5);doc.setTextColor(...INK);doc.text(pdfSafe(sec.title),M+4,y+6.6);
+    const its=countable(sec); doc.setFont('helvetica','normal');doc.setFontSize(8.5);doc.setTextColor(...MUT);
+    doc.text(`${its.filter(i=>st(i.id).done).length}/${its.length} marcados`,W-M-3,y+6.6,{align:'right'}); y+=14;
+    sec.items.forEach(it=>{
+      if(it.type==='group'){need(10);y+=1.5;doc.setFont('helvetica','bold');doc.setFontSize(7.5);doc.setTextColor(...MUT);doc.text(pdfSafe(it.label.toUpperCase()),M,y+3);y+=6;return}
+      const s=st(it.id), label=it.type==='topic'?it.title:it.q, a=it.type==='topic'?(s.v||'').trim():fmtVal(it,s.v);
+      doc.setFont('helvetica','bold');doc.setFontSize(9.5);
+      const ql=doc.splitTextToSize(pdfSafe(label),CW-8); doc.setFont('helvetica','normal');doc.setFontSize(9);
+      const al=a?doc.splitTextToSize(pdfSafe(a),CW-8):[]; const h=ql.length*lh(9.5)+(al.length?al.length*lh(9)+1:lh(8.5))+3.2;
+      need(Math.min(h,40));
+      // checkbox
+      doc.setLineWidth(.35);
+      if(s.done){doc.setFillColor(...OK);doc.setDrawColor(...OK);doc.roundedRect(M,y+.6,3.6,3.6,.7,.7,'FD');doc.setDrawColor(255,255,255);doc.setLineWidth(.5);doc.line(M+.8,y+2.5,M+1.6,y+3.3);doc.line(M+1.6,y+3.3,M+2.9,y+1.5)}
+      else {doc.setDrawColor(...MUT);doc.roundedRect(M,y+.6,3.6,3.6,.7,.7,'S')}
+      doc.setFont('helvetica','bold');doc.setFontSize(9.5);doc.setTextColor(...INK);
+      ql.forEach(l=>{need(lh(9.5));doc.text(l,M+7,y+lh(9.5)*0.78);y+=lh(9.5)});
+      if(al.length){doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(...BODY);y+=.8;al.forEach(l=>{need(lh(9));doc.text(l,M+7,y+lh(9)*0.78);y+=lh(9)})}
+      else {doc.setFont('helvetica','italic');doc.setFontSize(8.5);doc.setTextColor(...MUT);doc.text(s.done?(it.type==='topic'?'apresentado, sem anotações':'feita, sem resposta registrada'):(it.type==='topic'?'não apresentado':'não perguntado'),M+7,y+lh(8.5)*0.78);y+=lh(8.5)}
+      y+=3;
+    });
+  });
+  // rodapé
+  const n=doc.getNumberOfPages();
+  for(let p=1;p<=n;p++){doc.setPage(p);doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(...MUT);
+    doc.text(pdfSafe('Antropia · Call de diagnóstico · Comic Boom!'),M,H-8);doc.text(`${p}/${n}`,W-M,H-8,{align:'right'})}
+  return doc.output('blob');
+}
+
+/* ============================== ENTREGA ============================== */
+const inViewer=!!(window.claude&&typeof window.claude.use==='function');
+const dlReady=inViewer?Promise.resolve(window.claude.use('downloads')).catch(()=>null):Promise.resolve(null);
+function toast(msg){const t=document.createElement('div');t.className='toast';t.setAttribute('role','status');t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),3800)}
+function fileName(){const d=state.meta.data||new Date().toISOString().slice(0,10);return `call-comic-boom-${d}.pdf`}
+
+async function onPDF(e){
+  const btns=[$('#pdfBtn'),$('#pdfBtn2')]; btns.forEach(b=>{b.disabled=true;b.textContent='Gerando...'});
+  try{
+    if(!window.jspdf){ if(!inViewer){window.print();return} toast('Não consegui carregar o gerador de PDF. Use "Copiar respostas".');return }
+    const blob=await buildPDF();
+    if(inViewer){
+      const dl=await dlReady;
+      if(!dl){toast('Este visualizador não permite salvar arquivos. Use "Copiar respostas" ou abra a versão local.');return}
+      try{await dl.save({filename:fileName(),data:blob});toast('PDF salvo.')}
+      catch(err){const c=err&&err.code; toast(c==='declined'?'Download cancelado.':c==='rate_limited'?'Já existe um download aguardando confirmação.':c==='host_unavailable'?'Este app não salva arquivos. Abra a página no navegador do computador.':'Não foi possível salvar o PDF aqui. Use "Copiar respostas".')}
+    } else {
+      const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=fileName();document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);toast('PDF gerado.')
+    }
+  } catch(err){ toast('Erro ao gerar o PDF: '+(err&&err.message||err)) }
+  finally{ btns.forEach(b=>{b.disabled=false;b.textContent='Gerar PDF'}) }
+}
+async function onCopy(){
+  const txt=plainText();
+  try{await navigator.clipboard.writeText(txt);toast('Respostas copiadas. Cole na conversa com o Claude.')}
+  catch(e){const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();
+    let ok=false;try{ok=document.execCommand('copy')}catch(_){} ta.remove(); toast(ok?'Respostas copiadas.':'Não consegui copiar. Gere o PDF.')}
+}
+let clearArm=null;
+function onClear(){
+  const b=$('#clearBtn');
+  if(!clearArm){b.textContent='Clique de novo para apagar tudo';clearArm=setTimeout(()=>{clearArm=null;b.textContent='Limpar tudo'},4000);return}
+  clearTimeout(clearArm);clearArm=null;b.textContent='Limpar tudo';
+  clearTimeout(saveT);saveT=null;
+  state={meta:{},items:{}};try{localStorage.removeItem(KEY)}catch(e){} render();observe();toast('Respostas apagadas.');
+}
+function observe(){io.disconnect();document.querySelectorAll('section.sec').forEach(s=>io.observe(s))}
+
+$('#pdfBtn').addEventListener('click',onPDF);$('#pdfBtn2').addEventListener('click',onPDF);
+$('#copyBtn').addEventListener('click',onCopy);$('#copyBtn2').addEventListener('click',onCopy);
+$('#clearBtn').addEventListener('click',onClear);
+render();observe();barH();addEventListener('resize',barH);
+</script>
+</body>
+</html>
